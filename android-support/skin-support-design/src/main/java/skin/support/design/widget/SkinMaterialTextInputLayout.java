@@ -3,8 +3,8 @@ package skin.support.design.widget;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import androidx.annotation.StyleRes;
-import com.google.android.material.textfield.TextInputLayout;
+import android.support.annotation.StyleRes;
+import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -84,8 +84,9 @@ public class SkinMaterialTextInputLayout extends TextInputLayout implements Skin
         if (mCounterTextColorResId != INVALID_ID) {
             TextView counterView = getCounterView();
             if (counterView != null) {
+//                SkinLog.e(TAG, "mCounterTextColor = " +Integer.toHexString(SkinCompatResources.getInstance().getColor(mCounterTextColorResId)));
                 counterView.setTextColor(SkinCompatResources.getColor(getContext(), mCounterTextColorResId));
-                updateEditTextBackground();
+                updateEditTextBackgroundInternal();
             }
         }
     }
@@ -132,7 +133,7 @@ public class SkinMaterialTextInputLayout extends TextInputLayout implements Skin
             TextView errorView = getErrorView();
             if (errorView != null) {
                 errorView.setTextColor(SkinCompatResources.getColor(getContext(), mErrorTextColorResId));
-                updateEditTextBackground();
+                updateEditTextBackgroundInternal();
             }
         }
     }
@@ -148,7 +149,7 @@ public class SkinMaterialTextInputLayout extends TextInputLayout implements Skin
         return null;
     }
 
-    private void updateEditTextBackground() {
+    private void updateEditTextBackgroundInternal() {
         try {
             Method updateEditTextBackground = TextInputLayout.class.getDeclaredMethod("updateEditTextBackground");
             updateEditTextBackground.setAccessible(true);

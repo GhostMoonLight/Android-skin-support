@@ -1,7 +1,7 @@
 package skin.support.app;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -16,10 +16,8 @@ public class SkinCardViewInflater implements SkinLayoutInflater {
     public View createView(@NonNull Context context, final String name, @NonNull AttributeSet attrs) {
         View view = null;
         switch (name) {
-            case "androidx.cardview.widget.CardView":
+            case "android.support.v7.widget.CardView":
                 view = new SkinCompatCardView(context, attrs);
-                break;
-            default:
                 break;
         }
         return view;

@@ -4,23 +4,20 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import skin.support.app.SkinActivityLifecycle;
 import skin.support.app.SkinLayoutInflater;
-import skin.support.app.SkinWrapper;
 import skin.support.load.SkinAssetsLoader;
 import skin.support.load.SkinBuildInLoader;
 import skin.support.load.SkinNoneLoader;
@@ -38,7 +35,6 @@ public class SkinCompatManager extends SkinObservable {
     private final Object mLock = new Object();
     private final Context mAppContext;
     private boolean mLoading = false;
-    private List<SkinWrapper> mWrappers = new ArrayList<>();
     private List<SkinLayoutInflater> mInflaters = new ArrayList<>();
     private List<SkinLayoutInflater> mHookInflaters = new ArrayList<>();
     private SparseArray<SkinLoaderStrategy> mStrategyMap = new SparseArray<>();
@@ -204,15 +200,8 @@ public class SkinCompatManager extends SkinObservable {
      * @return
      */
     public SkinCompatManager addInflater(SkinLayoutInflater inflater) {
-        if (inflater instanceof SkinWrapper) {
-            mWrappers.add((SkinWrapper) inflater);
-        }
         mInflaters.add(inflater);
         return this;
-    }
-
-    public List<SkinWrapper> getWrappers() {
-        return mWrappers;
     }
 
     public List<SkinLayoutInflater> getInflaters() {
@@ -226,13 +215,11 @@ public class SkinCompatManager extends SkinObservable {
      * @param inflater 在{@link skin.support.app.SkinCompatViewInflater#createView(Context, String, String)}方法中最先调用.
      * @return
      */
-    @Deprecated
     public SkinCompatManager addHookInflater(SkinLayoutInflater inflater) {
         mHookInflaters.add(inflater);
         return this;
     }
 
-    @Deprecated
     public List<SkinLayoutInflater> getHookInflaters() {
         return mHookInflaters;
     }
@@ -269,13 +256,17 @@ public class SkinCompatManager extends SkinObservable {
         return mSkinAllActivityEnable;
     }
 
-    @Deprecated
+    /**
+     * 设置状态栏换肤，使用Theme中的{@link android.R.attr#statusBarColor}属性. 5.0以上有效.
+     *
+     * @param enable true: 打开; false: 关闭.
+     * @return
+     */
     public SkinCompatManager setSkinStatusBarColorEnable(boolean enable) {
         mSkinStatusBarColorEnable = enable;
         return this;
     }
 
-    @Deprecated
     public boolean isSkinStatusBarColorEnable() {
         return mSkinStatusBarColorEnable;
     }
@@ -370,7 +361,6 @@ public class SkinCompatManager extends SkinObservable {
             mStrategy = strategy;
         }
 
-        @Override
         protected void onPreExecute() {
             if (mListener != null) {
                 mListener.onStart();
@@ -404,21 +394,16 @@ public class SkinCompatManager extends SkinObservable {
             return null;
         }
 
-        @Override
         protected void onPostExecute(String skinName) {
             synchronized (mLock) {
                 // skinName 为""时，恢复默认皮肤
                 if (skinName != null) {
                     SkinPreference.getInstance().setSkinName(skinName).setSkinStrategy(mStrategy.getType()).commitEditor();
                     notifyUpdateSkin();
-                    if (mListener != null) {
-                        mListener.onSuccess();
-                    }
+                    if (mListener != null) mListener.onSuccess();
                 } else {
                     SkinPreference.getInstance().setSkinName("").setSkinStrategy(SKIN_LOADER_STRATEGY_NONE).commitEditor();
-                    if (mListener != null) {
-                        mListener.onFailed("皮肤资源获取失败");
-                    }
+                    if (mListener != null) mListener.onFailed("皮肤资源获取失败");
                 }
                 mLoading = false;
                 mLock.notifyAll();

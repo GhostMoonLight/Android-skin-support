@@ -4,14 +4,14 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.view.LayoutInflater;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
 import java.util.WeakHashMap;
 
-import androidx.core.view.LayoutInflaterCompat;
 import skin.support.SkinCompatManager;
 import skin.support.annotation.Skinable;
 import skin.support.content.res.SkinCompatResources;
@@ -55,6 +55,7 @@ public class SkinActivityLifecycle implements Application.ActivityLifecycleCallb
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         if (isContextSkinEnable(activity)) {
             installLayoutFactory(activity);
+            updateStatusBarColor(activity);
             updateWindowBackground(activity);
             if (activity instanceof SkinCompatSupportable) {
                 ((SkinCompatSupportable) activity).applySkin();
@@ -101,14 +102,11 @@ public class SkinActivityLifecycle implements Application.ActivityLifecycleCallb
     }
 
     private void installLayoutFactory(Context context) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
         try {
-            Field field = LayoutInflater.class.getDeclaredField("mFactorySet");
-            field.setAccessible(true);
-            field.setBoolean(layoutInflater, false);
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
             LayoutInflaterCompat.setFactory(layoutInflater, getSkinDelegate(context));
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Slog.i("SkinActivity", "A factory has already been set on this LayoutInflater");
         }
     }
 
@@ -137,11 +135,24 @@ public class SkinActivityLifecycle implements Application.ActivityLifecycleCallb
         return observer;
     }
 
+    private void updateStatusBarColor(Activity activity) {
+        if (SkinCompatManager.getInstance().isSkinStatusBarColorEnable()
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int statusBarColorResId = SkinCompatThemeUtils.getStatusBarColorResId(activity);
+            int colorPrimaryDarkResId = SkinCompatThemeUtils.getColorPrimaryDarkResId(activity);
+            if (checkResourceId(statusBarColorResId) != INVALID_ID) {
+                activity.getWindow().setStatusBarColor(SkinCompatResources.getColor(activity, statusBarColorResId));
+            } else if (checkResourceId(colorPrimaryDarkResId) != INVALID_ID) {
+                activity.getWindow().setStatusBarColor(SkinCompatResources.getColor(activity, colorPrimaryDarkResId));
+            }
+        }
+    }
+
     private void updateWindowBackground(Activity activity) {
         if (SkinCompatManager.getInstance().isSkinWindowBackgroundEnable()) {
             int windowBackgroundResId = SkinCompatThemeUtils.getWindowBackgroundResId(activity);
             if (checkResourceId(windowBackgroundResId) != INVALID_ID) {
-                Drawable drawable = SkinCompatResources.getDrawable(activity, windowBackgroundResId);
+                Drawable drawable = SkinCompatResources.getDrawableCompat(activity, windowBackgroundResId);
                 if (drawable != null) {
                     activity.getWindow().setBackgroundDrawable(drawable);
                 }
@@ -189,6 +200,7 @@ public class SkinActivityLifecycle implements Application.ActivityLifecycleCallb
                 return;
             }
             if (mContext instanceof Activity && isContextSkinEnable(mContext)) {
+                updateStatusBarColor((Activity) mContext);
                 updateWindowBackground((Activity) mContext);
             }
             getSkinDelegate(mContext).applySkin();

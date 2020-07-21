@@ -1,7 +1,7 @@
 package com.ximsfei.skindemo.widget;
 
 import android.content.Context;
-import androidx.drawerlayout.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 
 import skin.support.widget.SkinCompatBackgroundHelper;

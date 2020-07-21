@@ -4,15 +4,13 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.StyleRes;
-import com.google.android.material.navigation.NavigationView;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StyleRes;
+import android.support.design.widget.NavigationView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import skin.support.content.res.SkinCompatResources;
-import skin.support.content.res.SkinCompatV7ThemeUtils;
-import skin.support.content.res.SkinCompatVectorResources;
 import skin.support.design.R;
 import skin.support.widget.SkinCompatBackgroundHelper;
 import skin.support.widget.SkinCompatHelper;
@@ -52,7 +50,7 @@ public class SkinMaterialNavigationView extends NavigationView implements SkinCo
         if (a.hasValue(R.styleable.NavigationView_itemIconTint)) {
             mIconTintResId = a.getResourceId(R.styleable.NavigationView_itemIconTint, INVALID_ID);
         } else {
-            mDefaultTintResId = SkinCompatV7ThemeUtils.getColorPrimaryResId(context);
+            mDefaultTintResId = SkinCompatThemeUtils.getColorPrimaryResId(context);
         }
         if (a.hasValue(R.styleable.NavigationView_itemTextAppearance)) {
             int textAppearance = a.getResourceId(R.styleable.NavigationView_itemTextAppearance, INVALID_ID);
@@ -67,7 +65,7 @@ public class SkinMaterialNavigationView extends NavigationView implements SkinCo
         if (a.hasValue(R.styleable.NavigationView_itemTextColor)) {
             mTextColorResId = a.getResourceId(R.styleable.NavigationView_itemTextColor, INVALID_ID);
         } else {
-            mDefaultTintResId = SkinCompatV7ThemeUtils.getColorPrimaryResId(context);
+            mDefaultTintResId = SkinCompatThemeUtils.getColorPrimaryResId(context);
         }
         if (mTextColorResId == INVALID_ID) {
             mTextColorResId = SkinCompatThemeUtils.getTextColorPrimaryResId(context);
@@ -91,7 +89,7 @@ public class SkinMaterialNavigationView extends NavigationView implements SkinCo
         if (mItemBackgroundResId == INVALID_ID) {
             return;
         }
-        Drawable drawable = SkinCompatVectorResources.getDrawableCompat(getContext(), mItemBackgroundResId);
+        Drawable drawable = SkinCompatResources.getDrawableCompat(getContext(), mItemBackgroundResId);
         if (drawable != null) {
             setItemBackground(drawable);
         }

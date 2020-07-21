@@ -1,6 +1,21 @@
 # 更新日志
 
 ## skin-support
+* ![v4.0.5](https://img.shields.io/badge/skin--support-v4.0.5-green.svg)
+  * Fix issues
+
+* ![v3.1.4](https://img.shields.io/badge/skin--support-v3.1.4-green.svg)
+  * Fix memory leak
+
+* ![v4.0.4](https://img.shields.io/badge/skin--support-v4.0.4-green.svg)
+  * Fix memory leak
+
+* ![v3.1.3](https://img.shields.io/badge/skin--support-v3.1.3-green.svg)
+  * Add Android Q support
+  * android support library 28.0.0 适配
+
+* ![v4.0.2](https://img.shields.io/badge/skin--support-v4.0.2-green.svg)
+  * Add Android Q support
 
 * ![v3.1.1](https://img.shields.io/badge/skin--support-v3.1.1-green.svg)
   * Add Android P support
